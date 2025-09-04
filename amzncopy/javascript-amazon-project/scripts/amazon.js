@@ -41,7 +41,7 @@ products.forEach((product) => {
 
             <div class="product-spacer"></div>
 
-            <div class="added-to-cart">
+            <div class="visibility-false added-to-cart js-added-${product.id}">
                 <img src="images/icons/checkmark.png">
                 Added
             </div>
@@ -52,10 +52,13 @@ products.forEach((product) => {
             </button>
             </div>`;
 
+    
 });
 
 const productsGrid = document.querySelector('.js-products-grid');
 productsGrid.innerHTML = productsHTML;
+
+let timers = {};
 
 document.querySelectorAll('.js-add-to-cart').forEach( (button) => {
     button.addEventListener('click', () => {
@@ -89,5 +92,19 @@ document.querySelectorAll('.js-add-to-cart').forEach( (button) => {
         console.log(cart);
         console.log(cartQuantity);
         document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
+
+        const added = document.querySelector(`.js-added-${productId}`);
+
+        const timerKey = `timer-${productId}`;
+
+        clearTimeout(timers[timerKey]);
+
+        added.classList.remove('visibility-false');
+        added.classList.add('visibility-true');
+        timers[timerKey] = setTimeout( () => {
+            added.classList.remove('visibility-true');
+            added.classList.add('visibility-false');
+        }, 2000 );
     });
+
 } );
