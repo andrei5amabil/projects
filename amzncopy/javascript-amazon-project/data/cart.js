@@ -47,9 +47,8 @@ export function updateCartQuantity() {
         cartQuantity += cartItem.quantity;
     } );
 
-    console.log(cart);
-    console.log(cartQuantity);
     document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
+    return cartQuantity;
 }
 
 export function removeFromCart(productId) {
