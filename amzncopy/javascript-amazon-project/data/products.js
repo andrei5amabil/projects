@@ -31,8 +31,6 @@ export function loadProducts(func) {
   });
   xhr.open('GET', 'https://supersimplebackend.dev/products');
   xhr.send();
-
-
 }
 
 /*
