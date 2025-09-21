@@ -18,7 +18,9 @@ export function loadProductsFetch(){
   }).then((productsData)=>{
 
     products = productsData;
-  });
+  }).catch(()=>{
+    console.log('unexpected error.');
+  })
 
   return promise;
 }
@@ -29,6 +31,11 @@ export function loadProducts(func) {
     products = JSON.parse(xhr.response);
     func();
   });
+
+  xhr.addEventListener('error', (error)=>{
+    console.log('unexpected error');
+  });
+
   xhr.open('GET', 'https://supersimplebackend.dev/products');
   xhr.send();
 }

@@ -4,10 +4,15 @@ import { renderPaymentSummary } from "./paymentSummary.js";
 import { loadProducts, loadProductsFetch } from "../data/products.js";
 
 async function loadPage() {
-    await loadProductsFetch();
+
+    try{
+        await loadProductsFetch();
 
     renderOrderSummary();
     renderPaymentSummary();
+    } catch (error) {
+        console.log('unfortunate error');
+    }
 
 }
 
