@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>Chatbot</title>
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <div class="js-container"></div>
@@ -13,6 +14,20 @@
 
     <script src="https://unpkg.com/supersimpledev/babel.js"></script>
     <script type="text/babel">
+
+      function useAutoScroll(dependencies) {
+        const chatMessagesRef = React.useRef(null);
+
+        React.useEffect(() => {
+          const containerElem = chatMessagesRef.current;
+          if( containerElem ){
+            containerElem.scrollTop = containerElem.scrollHeight;
+          }
+        }, [dependencies]);
+
+        return chatMessagesRef;
+      }
+
       function ChatInput( {chatMessages, setChatMessages} ) {
         const [inputText, setInputText] = React.useState('')
 
@@ -20,7 +35,9 @@
           setInputText(event.target.value);
         }
 
-        function sendMessage() {
+        async function sendMessage() {
+
+          setInputText('');
 
           const newChatMessages = 
           [
@@ -30,11 +47,28 @@
               sender: 'user',
               id: crypto.randomUUID()
             }
-          ]
+          ];
 
-          setChatMessages(newChatMessages);
+          await setChatMessages(newChatMessages);
 
-          const response = Chatbot.getResponse(inputText);
+          const tempChatMessages = 
+          [
+            ...newChatMessages,
+            {
+              message: <img
+                className="loading-spinner"
+                src="loading-spinner.gif"
+              />,
+              sender: 'robot',
+              id: crypto.randomUUID()
+            }
+          ];
+
+          setChatMessages(tempChatMessages);
+
+          //const response = Chatbot.getResponse(inputText);
+          
+          const response = await Chatbot.getResponseAsync(inputText);
           setChatMessages([
             ...newChatMessages,
             {
@@ -45,7 +79,7 @@
           ]
           );
 
-          setInputText('');
+          
         }
 
         function enterMessage(event){
@@ -58,18 +92,20 @@
         }
 
         return (
-          <>
+          <div className="chat-input-container">
             <input 
               size="30" 
               placeholder="Send a message to Chatbot"
               onChange={saveInputText}
               onKeyDown={enterMessage}
               value={inputText}
+              className="chat-input"
               />
             <button
               onClick={sendMessage}
+              className="send-button"
             >Send</button>
-          </>
+          </div>
             );
       }
 
@@ -93,20 +129,30 @@
         }
         */
         return (
-          <div>
+          <div className={
+            sender === 'user' 
+              ? 'chat-message-user' 
+              : 'chat-message-robot' 
+          }>
             {sender === 'robot' && 
-              (<img width="50" src="robot.png" />)}
-            {message}
+              (<img className="chat-message-profile" src="robot.png" />)}
+            <div className="chat-message-text">
+              {message}
+            </div>
             {sender === 'user' && 
-              (<img width="50" src="user.png" />)}
+              (<img className="chat-message-profile" src="user.png" />)}
           </div>
         );
       }
 
       function ChatMessages({chatMessages}) {
 
+        const chatMessagesRef = useAutoScroll(chatMessages);
+
         return (
-          <>
+          <div 
+          className="chat-messages-container"
+          ref={chatMessagesRef}>
             {
               chatMessages.map((chatMessage) => {
                 return (
@@ -118,47 +164,45 @@
                 )
               })
             }
-          </>
+          </div>
         );
+      }
+
+      function WelocomeMessage({chatMessages}){
+
+        const welcome = 'Welcome to the chatbot project! Send a message using the textbox below.';
+
+        return (
+          <p className="welcome-message">
+            { chatMessages.length === 0 ? welcome : '' }
+          </p>
+        );
+
       }
 
       function App() {
 
         const [chatMessages, setChatMessages] = React.useState(
             [
-              {
-                message: 'hello chatbot',
-                sender: 'user',
-                id: 'id1'
-              },
-              {
-                message: 'hello how can i help you', 
-                sender: 'robot',
-                id: 'id2' 
-              },
-              {
-                message: 'what day is today',
-                sender: 'user',
-                id: 'id3'
-              },
-              {
-                message: 'i dont know man im a const value', 
-                sender: 'robot',
-                id: 'id4' 
-              }
+              
             ] 
         );
         
         return (
-          <>
+          <div className="app-container">
+          
+          <ChatMessages
+            chatMessages={chatMessages}
+          />
+
+          <WelocomeMessage
+            chatMessages={chatMessages}
+          />
           <ChatInput 
             chatMessages={chatMessages}
             setChatMessages={setChatMessages}
           />
-          <ChatMessages
-            chatMessages={chatMessages}
-          />
-        </>
+          </div>
         );
       }
 
