@@ -57,7 +57,7 @@
             {
               message: <img
                 className="loading-spinner"
-                src="loading-spinner.gif"
+                src="images/loading-spinner.gif"
               />,
               sender: 'robot',
               id: crypto.randomUUID()
@@ -135,12 +135,12 @@
               : 'chat-message-robot' 
           }>
             {sender === 'robot' && 
-              (<img className="chat-message-profile" src="robot.png" />)}
+              (<img className="chat-message-profile" src="images/robot.png" />)}
             <div className="chat-message-text">
               {message}
             </div>
             {sender === 'user' && 
-              (<img className="chat-message-profile" src="user.png" />)}
+              (<img className="chat-message-profile" src="images/user.png" />)}
           </div>
         );
       }
