@@ -15,10 +15,12 @@ function App() {
   }, []);
 
   const [chatMessages, setChatMessages] = React.useState(
-      [
-        
-      ] 
+      JSON.parse(localStorage.getItem('messages')) || []
   );
+
+  React.useEffect(() => {
+    localStorage.setItem('messages', JSON.stringify(chatMessages));
+  }, [chatMessages]);
   
   return (
     <div className="app-container">
